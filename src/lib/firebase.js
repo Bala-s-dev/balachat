@@ -5,12 +5,13 @@ import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: "balachat-a2150.firebaseapp.com",
-  projectId: "balachat-a2150",
-  storageBucket: "balachat-a2150.appspot.com",
-  messagingSenderId: "103851668119",
-  appId: "1:103851668119:web:ee035563f21af8c588afd2"
+  authDomain: "webchat-1cee7.firebaseapp.com",
+  projectId: "webchat-1cee7",
+  storageBucket: "webchat-1cee7.appspot.com",
+  messagingSenderId: "21554291273",
+  appId: "1:21554291273:web:e5926e20cec0b1595b5598"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
