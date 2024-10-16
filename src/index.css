@@ -7,7 +7,7 @@
 }
 
 body {
-  background-image: url(../public/bg.jpg);
+  background-color: aliceblue;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,8 +16,8 @@ body {
 }
 
 .container {
-  width: 80vw;
-  height: 90vh;
+  width: auto;
+  height: 95vh;
   background-color: rgba(17, 25, 40, 0.75);
   backdrop-filter: blur(19px) saturate(180%);
   border-radius: 12px;

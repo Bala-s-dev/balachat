@@ -2,32 +2,48 @@ import { auth, db } from "../../lib/firebase";
 import "./detail.css";
 import { useUserStore } from "../../lib/userStore";
 import { useChatStore } from "../../lib/chatStore";
-import { arrayRemove, doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, doc, updateDoc, collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { arrayUnion } from "firebase/firestore/lite";
+import { useEffect, useState } from "react";
 
 const Detail = () => {
-  const {chatId,
-  user,
-  isCurrentUserBlocked,
-  isReceiverBlocked, changeBlock} = useChatStore();
-
+  const { chatId, user, changeBlock, isReceiverBlocked } = useChatStore();
   const { currentUser } = useUserStore(); // Pulling user info from the store
-  const handleBlock =  async() => {
 
-    if(!user) return;
-    const userDocRef = doc(db,"users",currentUser.id)
+  const [sharedPhotos, setSharedPhotos] = useState([]);
+
+  const handleBlock = async () => {
+    if (!user) return;
+    const userDocRef = doc(db, "users", currentUser.id);
 
     try {
-      await updateDoc(userDocRef,{
+      await updateDoc(userDocRef, {
         blocked: isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
       });
-      changeBlock()
-
-    }catch(err){
-      console.log(err)
+      changeBlock();
+    } catch (err) {
+      console.log(err);
     }
+  };
 
-  }
+  const fetchSharedPhotos = async () => {
+    if (!chatId) return;
+
+    const photosRef = collection(db, "chats", chatId, "sharedPhotos"); // Adjust collection path as necessary
+    const q = query(photosRef, orderBy("timestamp", "desc"), limit(5));
+    
+    const querySnapshot = await getDocs(q);
+    const photos = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    setSharedPhotos(photos);
+  };
+
+  useEffect(() => {
+    fetchSharedPhotos();
+  }, [chatId]); // Fetch shared photos when chatId changes
 
   return (
     <div className="detail">
@@ -55,26 +71,19 @@ const Detail = () => {
             <img src="./arrowDown.png" alt="Arrow Down" />
           </div>
           <div className="photos">
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://media.istockphoto.com/id/1349374810/photo/a-laptop-half-closed-bright-and-glowing.jpg?s=2048x2048&w=is&k=20&c=ViidfpQUSa3HngqtaU2JX-_p0xEP-WUNkCxqONSh11o="
-                  alt="Shared Photo"
-                />
-                <span>Photo_1.png</span>
-              </div>
-              <img src="./download.png" className="icon" alt="Download Icon" />
-            </div>
-            <div className="photoItem">
-              <div className="photoDetail">
-                <img
-                  src="https://media.istockphoto.com/id/1349374810/photo/a-laptop-half-closed-bright-and-glowing.jpg?s=2048x2048&w=is&k=20&c=ViidfpQUSa3HngqtaU2JX-_p0xEP-WUNkCxqONSh11o="
-                  alt="Shared Photo"
-                />
-                <span>Photo_1.png</span>
-              </div>
-              <img src="./download.png" className="icon" alt="Download Icon" />
-            </div>
+            {sharedPhotos.length > 0 ? (
+              sharedPhotos.map(photo => (
+                <div key={photo.id} className="photoItem">
+                  <div className="photoDetail">
+                    <img src={photo.url} alt={`Shared Photo ${photo.id}`} />
+                    <span>{new Date(photo.timestamp.toDate()).toLocaleString()}</span>
+                  </div>
+                  <img src="./download.png" className="icon" alt="Download Icon" />
+                </div>
+              ))
+            ) : (
+              <p>No shared photos available.</p>
+            )}
           </div>
         </div>
         <div className="option">
@@ -83,13 +92,7 @@ const Detail = () => {
             <img src="./arrowUp.png" alt="Arrow Up" />
           </div>
         </div>
-        <button onClick={handleBlock}>
-
-          isCurrentUserBlocked ? "You are blocked!" : isReceiverBlocked ? "User blocked" : "Block User"
-
-
-
-        </button>
+        <button onClick={handleBlock}>Block User</button>
         <button className="logout" onClick={() => auth.signOut()}>
           Logout
         </button>

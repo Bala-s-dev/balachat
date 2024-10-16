@@ -126,6 +126,13 @@ const Chat = () => {
     return `${Math.floor(diff / 1440)} days ago`;
   };
 
+  // Handle the "Enter" key press to send a message
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSend(); // Call handleSend when Enter is pressed
+    }
+  };
+
   return (
     <div className="chat">
       <div className="top">
@@ -179,6 +186,7 @@ const Chat = () => {
           placeholder="Type a message..."
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onKeyDown={handleKeyDown}  // Listen for Enter key press
         />
         <div className="emoji">
           <img
