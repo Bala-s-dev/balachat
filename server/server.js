@@ -24,9 +24,29 @@ const { initializeSocket } = require("./socket");
 const app = express();
 const port = process.env.PORT || 5000;
 
+const YOUR_COMPUTER_IP_HERE = "10.15.199.78";
+
+const allowedOrigins = [
+    process.env.CLIENT_URL, // This is your 'http://localhost:5173'
+    `http://${YOUR_COMPUTER_IP_HERE}:5173` // This is for your mobile phone
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST"],
+};
+
 // Middleware
-app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Rate Limiter

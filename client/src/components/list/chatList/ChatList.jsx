@@ -12,8 +12,6 @@ const ChatList = () => {
 
   const { currentUser } = useUserStore();
   const { changeChat } = useChatStore();
-  
-  // This state will track unread messages
   const [unreadChats, setUnreadChats] = useState(new Set());
 
   useEffect(() => {
@@ -81,19 +79,20 @@ const ChatList = () => {
   const handleSelect = (chat) => {
     // We now pass the full receiver object
     const receiver = {
-        id: chat.receiverId,
-        username: chat.receiverUsername,
-        avatar: chat.receiverAvatar,
-        // We need to fetch the receiver's 'blocked' array for the check
-        // For now, we'll optimistically assume it's fine.
-        // A better approach: fetch full user info here.
+      id: chat.receiverId,
+      username: chat.receiverUsername,
+      avatar: chat.receiverAvatar,
+      blocked: chat.receiverBlocked,
+      // We need to fetch the receiver's 'blocked' array for the check
+      // For now, we'll optimistically assume it's fine.
+      // A better approach: fetch full user info here.
     };
     
     // Mark as read
-    setUnreadChats(prev => {
-        const newUnread = new Set(prev);
-        newUnread.delete(chat.chatId);
-        return newUnread;
+    setUnreadChats((prev) => {
+      const newUnread = new Set(prev);
+      newUnread.delete(chat.chatId);
+      return newUnread;
     });
 
     changeChat(chat.chatId, receiver);
@@ -114,24 +113,19 @@ const ChatList = () => {
             onChange={(e) => setInput(e.target.value)}
           />
         </div>
-        <img
-          src={addMode ? "./minus.png" : "./plus.png"}
-          alt="Toggle Add"
-          className="add"
-          onClick={() => setAddMode((prev) => !prev)}
-        />
+        <button className="add" onClick={() => setAddMode((prev) => !prev)}>
+          <img src={addMode ? './minus.png' : './plus.png'} alt="Toggle Add" />
+        </button>
       </div>
 
       {filteredChats.map((chat) => (
         <div
-          className="item"
+          // UI CHANGE: Use class for unread instead of style
+          className={`item ${unreadChats.has(chat.chatId) ? 'unread' : ''}`}
           key={chat.chatId}
           onClick={() => handleSelect(chat)}
-          style={{
-            backgroundColor: unreadChats.has(chat.chatId) ? "#5183fe" : "transparent",
-          }}
         >
-          <img src={chat.receiverAvatar || "./avatar.png"} alt="Avatar" />
+          <img src={chat.receiverAvatar || './avatar.png'} alt="Avatar" />
           <div className="texts">
             <span>{chat.receiverUsername}</span>
             <p>{chat.lastMessage}</p>

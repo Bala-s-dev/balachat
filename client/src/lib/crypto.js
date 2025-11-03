@@ -1,10 +1,8 @@
 // src/lib/crypto.js
 import CryptoJS from "crypto-js";
 
-// We'll use the chatId as the shared secret key.
-// In a more advanced app, you'd use a more secure key exchange.
+// ... (getSecretKey is the same) ...
 const getSecretKey = (chatId) => {
-    // Use a portion of the chat ID as the key
     return chatId.substring(0, 16);
 };
 
@@ -22,7 +20,11 @@ export const decryptMessage = (ciphertext, chatId) => {
     try {
         const bytes = CryptoJS.AES.decrypt(ciphertext, key);
         const originalText = bytes.toString(CryptoJS.enc.Utf8);
-        return originalText || " "; // Handle empty decrypted string
+        // --- THIS IS THE FIX ---
+        // Return the original text, even if it's an empty string.
+        // Don't default to " ".
+        return originalText;
+        // --- END OF FIX ---
     } catch (e) {
         console.error("Decryption failed:", e);
         return "Error: Could not decrypt message";

@@ -1,58 +1,58 @@
-import "./detail.css";
-import { useUserStore } from "../../lib/userStore";
-import { useChatStore } from "../../lib/chatStore";
-import { api } from "../../lib/api";
-import { toast } from "react-toastify";
-// Remove Firebase imports
+import './detail.css';
+import { useUserStore } from '../../lib/userStore';
+import { useChatStore } from '../../lib/chatStore';
+import { api } from '../../lib/api';
+import { toast } from 'react-toastify';
 
 const Detail = () => {
-  const { chatId, user, changeBlock, isReceiverBlocked, resetChat } = useChatStore();
+  const { user, changeBlock, isReceiverBlocked, resetChat, setCurrentView } =
+    useChatStore();
   const { currentUser, logoutUser, updateUser } = useUserStore();
-  
-  // Note: Your original file was missing logic for fetching shared photos.
-  // I will leave that part out as it was not fully implemented.
 
   const handleBlock = async () => {
     if (!user) return;
 
-    const blockEndpoint = isReceiverBlocked ? "/users/unblock" : "/users/block";
-    const body = isReceiverBlocked 
-      ? { unblockUserId: user.id } 
+    const blockEndpoint = isReceiverBlocked ? '/users/unblock' : '/users/block';
+    const body = isReceiverBlocked
+      ? { unblockUserId: user.id }
       : { blockUserId: user.id };
 
     try {
       await api.post(blockEndpoint, body);
-      
-      // Update block status in chat store
       changeBlock();
-      
-      // Update currentUser in user store
-      const updatedBlockedList = isReceiverBlocked
-        ? currentUser.blocked.filter(id => id !== user.id)
-        : [...currentUser.blocked, user.id];
-        
-      updateUser({ ...currentUser, blocked: updatedBlockedList });
-      
-      toast.success(isReceiverBlocked ? "User unblocked" : "User blocked");
 
+      const updatedBlockedList = isReceiverBlocked
+        ? currentUser.blocked.filter((id) => id !== user.id)
+        : [...currentUser.blocked, user.id];
+
+      updateUser({ ...currentUser, blocked: updatedBlockedList });
+
+      toast.success(isReceiverBlocked ? 'User unblocked' : 'User blocked');
     } catch (err) {
       console.log(err);
-      toast.error(err.response?.data?.message || "Failed to update block status");
+      toast.error(
+        err.response?.data?.message || 'Failed to update block status'
+      );
     }
   };
-  
+
   const handleLogout = () => {
     logoutUser();
-    resetChat(); // Reset the chat state
-    toast.success("Logged out successfully");
-  }
+    resetChat(); // This will also reset the view to 'list'
+    toast.success('Logged out successfully');
+  };
 
   return (
     <div className="detail">
+      {/* Mobile-only Back Button */}
+      <button className="back-button" onClick={() => setCurrentView('chat')}>
+        &lt;
+      </button>
+
       <div className="user">
-        <img src={user?.avatar || "./avatar.png"} alt="User Avatar" />
+        <img src={user?.avatar || './avatar.png'} alt="User Avatar" />
         <h2>{user?.username}</h2>
-        <p>{user?.bio || "User bio"}</p>
+        <p>{user?.bio || 'User bio'}</p>
       </div>
       <div className="info">
         <div className="option">
@@ -81,7 +81,7 @@ const Detail = () => {
           </div>
         </div>
         <button onClick={handleBlock}>
-          {isReceiverBlocked ? "Unblock User" : "Block User"}
+          {isReceiverBlocked ? 'Unblock User' : 'Block User'}
         </button>
         <button className="logout" onClick={handleLogout}>
           Logout

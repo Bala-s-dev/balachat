@@ -2,7 +2,8 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import { useUserStore } from "./userStore";
 
-export const API_URL = "http://localhost:5000";
+// export const API_URL = "http://localhost:5000";
+export const API_URL = "http://10.15.199.78:5000";
 
 // --- Axios API Instance ---
 // This instance will automatically attach the JWT token to requests

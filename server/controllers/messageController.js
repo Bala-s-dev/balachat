@@ -4,6 +4,7 @@ const sanitizeHtml = require("sanitize-html");
 
 // For fetching initial messages
 exports.getMessages = async (req, res) => {
+    // ... (no changes here) ...
     try {
         const messages = await Message.find({
             chatId: req.params.chatId,
@@ -18,9 +19,8 @@ exports.getMessages = async (req, res) => {
 // This is the function called by socket.js
 exports.saveMessage = async (messageData) => {
     try {
-        // --- 2. Sanitize the text input ---
-        // This allows no HTML tags at all, preventing XSS.
-        const sanitizedText = sanitizeHtml(messageData.text, {
+        // --- Sanitize the ENCRYPTED text input ---
+        const sanitizedEncryptedText = sanitizeHtml(messageData.text, {
             allowedTags: [],
             allowedAttributes: {},
         });
@@ -29,21 +29,30 @@ exports.saveMessage = async (messageData) => {
         const newMessage = new Message({
             chatId: messageData.chatId,
             senderId: messageData.senderId,
-            text: sanitizedText, // Use the sanitized text
+            text: sanitizedEncryptedText, // Use the sanitized encrypted text
             img: messageData.img,
         });
         await newMessage.save();
 
         // 4. Update the chat's last message
-        // We sanitize this too, just in case.
-        const lastMessagePreview = sanitizedText
-            ? sanitizedText.substring(0, 30) // Show a preview
-            : "Image";
+        // --- THIS IS THE FIX ---
+        // We now check for a 'textPreview' field from the client.
+        let lastMessagePreview;
+        if (messageData.img) {
+            lastMessagePreview = "Image";
+        } else {
+            // Sanitize the *plaintext* preview sent from the client
+            lastMessagePreview = sanitizeHtml(messageData.textPreview || "", {
+                allowedTags: [],
+                allowedAttributes: {},
+            }).substring(0, 30); // Show a preview
+        }
+        // --- END OF FIX ---
 
         const updatedChat = await Chat.findByIdAndUpdate(
             messageData.chatId,
             {
-                lastMessage: messageData.img ? "Image" : lastMessagePreview,
+                lastMessage: lastMessagePreview, // Use the new preview
                 lastMessageAt: Date.now(),
             },
             { new: true }

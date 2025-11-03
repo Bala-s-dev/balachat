@@ -1,72 +1,152 @@
-
 .chatList {
     flex: 1;
-    overflow: scroll;
-
+    overflow-y: auto;
+}
     
-    .search {
-        display: flex;
-        align-items: center;
+.chatList .search {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
+    padding: 15px 10px; /* Reduced padding */
+}
+
+.chatList .search .searchBar {
+    flex: 1;
+    background-color: rgba(17, 25, 40, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+.chatList .search .searchBar input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    flex: 1;
+    padding: 10px;
+    font-size: 14px; /* Smaller font on mobile */
+}
+
+.chatList .search .searchBar img {
+    width: 20px;
+    height: 20px;
+}
+
+.chatList .search .add {
+    width: 30px; /* Smaller add button */
+    height: 30px;
+    background-color: rgba(17, 25, 40, 0.5);
+    padding: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    /* Ensure icon inside is centered and sized */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+ .chatList .search .add img {
+    width: 16px;
+    height: 16px;
+ }
+    
+.chatList .item {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Reduced gap */
+    padding: 15px 10px; /* Reduced padding */
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.125);
+    position: relative; 
+}
+
+.chatList .item.unread::after {
+  content: '';
+  width: 8px; /* Smaller dot */
+  height: 8px;
+  border-radius: 50%;
+  background-color: #5183fe;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.chatList .item img {
+    width: 40px; /* Smaller avatar */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.chatList .item .texts {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Reduced gap */
+    overflow: hidden; 
+}
+
+.chatList .item .texts span {
+    font-weight: 500;
+    font-size: 15px; /* Smaller font */
+}
+
+.chatList .item .texts p {
+    font-size: 13px; /* Smaller font */
+    font-weight: 300;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Desktop View --- */
+@media (min-width: 768px) {
+    .chatList .search {
         gap: 20px;
         padding: 20px;
-
-        .searchBar {
-            flex:1;
-            background-color: rgba(162, 166, 174, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            border-radius: 10px;
-
-            input {
-                background-color: transparent;
-                border: none;
-                outline: none;
-                color: white;
-                flex: 1
-            }
-            
-            img  {
-                width: 30px;
-                height: 30px;
-            }
-        }
-        .add {
-            width: 36px;
-            height: 36px;
-            background-color: rgba(17, 25, 40, 0.5);
-            padding: 0;
-            border-radius: 10px;
-            cursor: pointer;
-        }
     }
-    .item {
-        display: flex;
-        align-items: center;
+
+    .chatList .search .searchBar {
         gap: 20px;
-        padding: 20px;
-        cursor: pointer;
-        border-bottom: 1px solid rgb(40, 37, 37);
+    }
 
-        img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .texts {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+    .chatList .search .searchBar input {
+        font-size: 16px;
+    }
 
-            span {
-                font-weight: 500;
-            }
-            p {
-                font-size: 14px;
-                font-weight: 300;
-            }
-        }
+    .chatList .search .add {
+        width: 36px;
+        height: 36px;
     }
     
+    .chatList .item {
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .chatList .item.unread::after {
+        width: 10px;
+        height: 10px;
+        right: 20px;
+    }
+
+    .chatList .item img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .chatList .item .texts {
+        gap: 10px;
+    }
+
+     .chatList .item .texts span {
+        font-size: 1rem;
+    }
+
+     .chatList .item .texts p {
+        font-size: 14px;
+    }
 }

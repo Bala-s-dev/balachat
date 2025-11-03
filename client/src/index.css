@@ -7,34 +7,138 @@
     Arial, sans-serif;
 }
 
-body {
-  /* New gradient background */
+body,
+#root {
   background: linear-gradient(to right, #8e2de2, #4a00e0);
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  width: 100vw;
   color: white;
-}
-
-.container {
-  width: 90vw;
-  height: 90vh;
-  /* Cleaner glassmorphism */
-  background-color: rgba(17, 25, 40, 0.5);
-  backdrop-filter: blur(10px);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.125);
-  display: grid;
-  /* 2-column layout: List | Chat */
-  grid-template-columns: 1fr 2.5fr;
-  transition: grid-template-columns 0.3s ease-in-out;
   overflow: hidden;
 }
 
-/* 3-column layout when Detail is open */
-.container.detail-open {
-  grid-template-columns: 1fr 1.5fr 1fr;
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  background-color: rgba(17, 25, 40, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.list,
+.chat,
+.detail,
+.chat-placeholder {
+  flex-shrink: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat,
+.detail {
+  border-left: 1px solid rgba(255, 255, 255, 0.125);
+}
+
+/* --- Mobile View (default) --- */
+/* All components take full width */
+.list, .chat, .detail {
+  width: 100%;
+}
+
+/* By default, show list and hide others */
+.list { display: flex; }
+.chat, .detail, .chat-placeholder { display: none; }
+
+/* Use classes to toggle mobile views */
+.container.show-chat .list,
+.container.show-detail .list {
+  display: none;
+}
+.container.show-chat .chat {
+  display: flex;
+}
+.container.show-detail .detail {
+  display: flex;
+}
+
+/* --- Desktop "WhatsApp" View (Corrected) --- */
+@media (min-width: 768px) {
+  .container {
+    width: 90vw;
+    height: 90vh;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  /* --- THIS IS THE FIX --- */
+  /* 1. List is ALWAYS visible on desktop */
+  .list {
+    flex: 1;
+    display: flex;
+    width: auto; /* Reset mobile width */
+  }
+
+  /* 2. Override the mobile hiding rules */
+  .container.show-chat .list,
+  .container.show-detail .list {
+    display: flex; /* This overrides 'display: none' */
+  }
+  /* --- END OF FIX --- */
+
+
+  /* By default, show placeholder */
+  .chat-placeholder {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    color: #c9c9c9;
+  }
+  .chat-placeholder h2 { font-weight: 300; font-size: 24px; }
+  .chat-placeholder p { font-weight: 300; }
+
+  /* Chat is hidden by default */
+  .chat {
+    flex: 2;
+    display: none; 
+    width: auto;
+  }
+
+  /* Detail is hidden by default */
+  .detail {
+    flex: 1;
+    display: none;
+    width: auto;
+  }
+
+  /* When a chat is selected */
+  .container.show-chat .chat {
+    display: flex;
+  }
+  .container.show-chat .chat-placeholder {
+    display: none;
+  }
+
+  /* When detail is also open */
+  .container.show-detail .chat {
+    display: flex;
+    flex: 1.5; /* Shrink chat panel */
+  }
+  .container.show-detail .detail {
+    display: flex; /* Show detail panel */
+  }
+  .container.show-detail .chat-placeholder {
+    display: none;
+  }
 }
 
 .loading {
@@ -42,25 +146,6 @@ body {
   font-size: 36px;
   border-radius: 10px;
   background-color: rgba(17, 25, 40, 0.9);
-}
-
-/* Placeholder for when no chat is selected */
-.chat-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  flex-direction: column;
-  gap: 10px;
-  border-left: 1px solid rgba(255, 255, 255, 0.125);
-  color: #c9c9c9;
-}
-.chat-placeholder h2 {
-  font-weight: 300;
-  font-size: 24px;
-}
-.chat-placeholder p {
-  font-weight: 300;
 }
 
 /* Scrollbar styles */

@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Chat from './components/chat/Chat';
 import Detail from './components/detail/Detail';
 import List from './components/list/List';
@@ -10,38 +10,38 @@ import { useChatStore } from './lib/chatStore';
 
 const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-  const { chatId } = useChatStore();
-
-  // This state will control the slide-in Detail panel
-  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const { chatId, currentView } = useChatStore();
 
   useEffect(() => {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
-  // When we switch chats, close the detail panel
-  useEffect(() => {
-    setIsDetailOpen(false);
-  }, [chatId]);
-
   if (isLoading) return <div className="loading">Loading...</div>;
 
+  // This logic now ONLY applies classes for state
+  // It's used by both mobile and desktop CSS
+  const getContainerClass = () => {
+    if (currentView === 'detail') return 'show-detail';
+    if (currentView === 'chat') return 'show-chat';
+    return 'show-list';
+  };
+
   return (
-    <div className={`container ${chatId && isDetailOpen ? 'detail-open' : ''}`}>
+    <div className={`container ${getContainerClass()}`}>
       {currentUser ? (
         <>
           <List />
           {chatId ? (
-            <Chat onToggleDetail={() => setIsDetailOpen((p) => !p)} />
+            <>
+              <Chat />
+              <Detail />
+            </>
           ) : (
             <div className="chat-placeholder">
               <img src="./favicon.png" alt="Logo" width={80} />
               <h2>Bala's Chat</h2>
               <p>Select a chat to start messaging</p>
             </div>
-          )}
-          {chatId && isDetailOpen && (
-            <Detail onClose={() => setIsDetailOpen(false)} />
           )}
         </>
       ) : (

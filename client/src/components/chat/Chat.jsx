@@ -1,40 +1,45 @@
-import { useEffect, useRef, useState } from "react";
-import "./chat.css";
-import EmojiPicker from "emoji-picker-react";
-import { api, getSocket } from "../../lib/api";
-import { useChatStore } from "../../lib/chatStore";
-import { useUserStore } from "../../lib/userStore";
-import upload from "../../lib/upload";
+import { useEffect, useRef, useState } from 'react';
+import './chat.css';
+import EmojiPicker from 'emoji-picker-react';
+import { api, getSocket } from '../../lib/api';
+import { useChatStore } from '../../lib/chatStore';
+import { useUserStore } from '../../lib/userStore';
+import upload from '../../lib/upload';
 import { encryptMessage, decryptMessage } from '../../lib/crypto';
+import { toast } from 'react-toastify';
 
 const Chat = () => {
   const [chat, setChat] = useState({ messages: [] });
   const [open, setOpen] = useState(false);
-  const [text, setText] = useState("");
+  const [text, setText] = useState('');
   const [img, setImg] = useState({
     file: null,
-    url: "",
+    url: '',
   });
 
   const { currentUser } = useUserStore();
-  const { chatId, user, isCurrentUserBlocked, isReceiverBlocked } = useChatStore();
+  const {
+    chatId,
+    user,
+    isCurrentUserBlocked,
+    isReceiverBlocked,
+    setCurrentView,
+  } = useChatStore();
   const socket = getSocket();
   const endRef = useRef(null);
 
   // Scroll to bottom
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chat.messages, img.url]); // Add img.url to scroll on preview
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chat.messages, img.url]);
 
   // Fetch messages and listen for new ones
   useEffect(() => {
     if (!chatId) return;
 
-    // 1. Fetch initial messages
     const fetchMessages = async () => {
       try {
         const res = await api.get(`/messages/${chatId}`);
-        // --- 2. Decrypt initial messages ---
         const decryptedMessages = res.data.map((message) => ({
           ...message,
           text: decryptMessage(message.text, chatId),
@@ -42,18 +47,16 @@ const Chat = () => {
         setChat({ messages: decryptedMessages });
       } catch (err) {
         console.log(err);
+        toast.error('Failed to fetch messages.');
       }
     };
     fetchMessages();
 
-    // 2. Join chat room via WebSocket
     if (!socket) return;
     socket.emit('joinChat', chatId);
 
-    // 3. Listen for new messages
     const handleNewMessage = (newMessage) => {
       if (newMessage.chatId === chatId) {
-        // --- 3. Decrypt incoming message ---
         setChat((prev) => ({
           ...prev,
           messages: [
@@ -64,15 +67,10 @@ const Chat = () => {
       }
     };
 
-    if (socket) {
-      socket.on("newMessage", handleNewMessage);
-    }
+    socket.on('newMessage', handleNewMessage);
 
-    // 4. Cleanup
     return () => {
-      if (socket) {
-        socket.off("newMessage", handleNewMessage);
-      }
+      socket.off('newMessage', handleNewMessage);
     };
   }, [chatId, socket]);
 
@@ -91,8 +89,8 @@ const Chat = () => {
   };
 
   const handleSend = async () => {
-    if ((text.trim() === "" && !img.file) || !socket) return;
-    
+    if ((text.trim() === '' && !img.file) || !socket) return;
+
     let imgUrl = null;
 
     try {
@@ -100,7 +98,6 @@ const Chat = () => {
         imgUrl = await upload(img.file);
       }
 
-      // --- Encrypt the message text before sending ---
       const encryptedText = encryptMessage(text, chatId);
 
       const messageData = {
@@ -108,11 +105,11 @@ const Chat = () => {
         senderId: currentUser.id,
         text: encryptedText,
         img: imgUrl,
-        createdAt: new Date(), // Client-side timestamp
+        createdAt: new Date(),
+        textPreview: text, // For the chatlist preview
       };
 
-      // Emit the message via socket
-      socket.emit("sendMessage", messageData);
+      socket.emit('sendMessage', messageData);
 
       // Optimistic UI update
       setChat((prev) => ({
@@ -121,87 +118,91 @@ const Chat = () => {
       }));
 
       // Clear inputs
-      setText("");
-      setImg({ file: null, url: "" });
+      setText('');
+      setImg({ file: null, url: '' });
     } catch (err) {
-      console.log("Error sending message:", err);
+      console.log('Error sending message:', err);
+      toast.error(err.message || 'Failed to send message.');
     }
   };
-  
-  // ... (rest of the component, formatTime, handleKeyDown, etc.)
-  // The 'formatTime' function from your original file should be fine.
-    // Function to format timestamps
+
   const formatTime = (timestamp) => {
-    if (!timestamp) return "";
+    if (!timestamp) return '';
     let messageTime = new Date(timestamp);
-    
-    // Check if timestamp is a valid date
+
     if (isNaN(messageTime.getTime())) {
-        // Try to handle Firebase-like timestamp (if it's an object)
-        if (timestamp.toDate) {
-            messageTime = timestamp.toDate();
-        } else {
-             return "Invalid date";
-        }
+      if (timestamp.toDate) {
+        messageTime = timestamp.toDate();
+      } else {
+        return 'Invalid date';
+      }
     }
 
     const now = new Date();
-    const diff = Math.floor((now - messageTime) / 60000); // Difference in minutes
+    const diff = Math.floor((now - messageTime) / 60000);
 
-    if (diff < 1) return "Just now";
+    if (diff < 1) return 'Just now';
     if (diff < 60) return `${diff} min ago`;
     if (diff < 1440) return `${Math.floor(diff / 60)} hr ago`;
     return `${Math.floor(diff / 1440)} days ago`;
   };
 
-  // Handle the "Enter" key press to send a message
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Prevent new line on Enter
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSend();
     }
   };
 
-
-  const placeholderText = isCurrentUserBlocked 
-    ? "You are blocked" 
-    : isReceiverBlocked 
-    ? "User is blocked"
-    : "Type a message...";
+  const placeholderText = isCurrentUserBlocked
+    ? 'You are blocked and cannot reply'
+    : isReceiverBlocked
+    ? 'You blocked this user'
+    : 'Type a message...';
 
   return (
     <div className="chat">
       <div className="top">
+        <button className="back-button" onClick={() => setCurrentView('list')}>
+          &lt;
+        </button>
         <div className="user">
-          <img src={user?.avatar || "./avatar.png"} alt="User avatar" />
+          <img src={user?.avatar || './avatar.png'} alt="User avatar" />
           <div className="texts">
-            <span>{user?.username || "User"}</span>
-            <p>Lorem ipsum dolor sit amet.</p>
+            <span>{user?.username || 'User'}</span>
+            <p>Online</p>
           </div>
         </div>
         <div className="icons">
           <img src="./phone.png" alt="Phone icon" />
           <img src="./video.png" alt="Video icon" />
-          <img src="./info.png" alt="Info icon" />
+          <img
+            src="./info.png"
+            alt="Info icon"
+            onClick={() => setCurrentView('detail')}
+          />
         </div>
       </div>
+
       <div className="center">
-        {chat.messages && chat.messages.map((message) => (
-          <div
-            className={`message ${
-              message.senderId === currentUser.id ? "own" : ""
-            }`}
-            key={message._id || message.createdAt} // Use _id from DB or createdAt for optimistic
-          >
-            <div className="texts">
-              {message.img && (
-                <img src={message.img} alt="message attachment" />
-              )}
-              <p>{message.text}</p>
-              <span>{formatTime(message.createdAt)}</span>
+        {chat.messages &&
+          chat.messages.map((message) => (
+            <div
+              className={`message ${
+                message.senderId === currentUser.id ? 'own' : ''
+              }`}
+              key={message._id || message.createdAt}
+            >
+              <div className="texts">
+                {message.img && (
+                  <img src={message.img} alt="message attachment" />
+                )}
+                {message.text && message.text.trim() && <p>{message.text}</p>}
+                <span>{formatTime(message.createdAt)}</span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        {/* --- THIS BLOCK IS NOW REMOVED ---
         {img.url && (
           <div className="message own">
             <div className="texts">
@@ -209,8 +210,23 @@ const Chat = () => {
             </div>
           </div>
         )}
+        --- END OF REMOVAL --- */}
         <div ref={endRef}></div>
       </div>
+
+      {/* This is the correct preview, above the input bar */}
+      {img.url && (
+        <div className="preview">
+          <img src={img.url} alt="Preview" />
+          <button
+            className="preview-close"
+            onClick={() => setImg({ file: null, url: '' })}
+          >
+            X
+          </button>
+        </div>
+      )}
+
       <div className="bottom">
         <div className="icons">
           <label htmlFor="file">
@@ -219,7 +235,7 @@ const Chat = () => {
           <input
             type="file"
             id="file"
-            style={{ display: "none" }}
+            style={{ display: 'none' }}
             onChange={handleImg}
             disabled={isCurrentUserBlocked || isReceiverBlocked}
           />
@@ -244,10 +260,14 @@ const Chat = () => {
             {open && <EmojiPicker onEmojiClick={handleEmoji} />}
           </div>
         </div>
-        <button 
-          className="sendButton" 
+        <button
+          className="sendButton"
           onClick={handleSend}
-          disabled={isCurrentUserBlocked || isReceiverBlocked}
+          disabled={
+            isCurrentUserBlocked ||
+            isReceiverBlocked ||
+            (text.trim() === '' && !img.file)
+          }
         >
           Send
         </button>

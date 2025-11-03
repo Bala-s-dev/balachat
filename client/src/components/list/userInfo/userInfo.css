@@ -1,31 +1,68 @@
 .userInfo {
-    padding: 20px;
+    /* --- MOBILE FIRST --- */
+    /* Tighter padding for mobile */
+    padding: 12px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    .user {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    
-         img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-    }
-    .icons {
-        display: flex;
-        gap: 20px;
-
-        img {
-            width: 20px;
-            height: 20px;
-        }
-    }
+    border-bottom: 1px solid #dddddd35; /* Add separator */
 }
 
+.userInfo .user {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Reduced gap */
+}
 
+.userInfo .user img {
+    /* Smaller avatar on mobile */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
+.userInfo .user h2 {
+    font-size: 16px; /* Smaller font on mobile */
+}
+
+.userInfo .icons {
+    display: flex;
+    gap: 15px; /* Reduced gap */
+}
+
+.userInfo .icons img {
+    width: 18px; /* Slightly smaller icons */
+    height: 18px;
+    cursor: pointer;
+}
+
+/* --- DESKTOP VIEW --- */
+@media (min-width: 768px) {
+    .userInfo {
+        padding: 20px; /* Restore desktop padding */
+        border-bottom: none; /* No separator on desktop */
+    }
+
+    .userInfo .user {
+        gap: 20px; /* Restore desktop gap */
+    }
+
+    .userInfo .user img {
+        width: 50px; /* Restore desktop avatar size */
+        height: 50px;
+    }
+
+    .userInfo .user h2 {
+        font-size: 1.25rem; /* Restore desktop font size */
+    }
+
+    .userInfo .icons {
+        gap: 20px;
+    }
+
+    .userInfo .icons img {
+        width: 20px;
+        height: 20px;
+    }
+}

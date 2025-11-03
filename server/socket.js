@@ -9,16 +9,15 @@ function initializeSocket(io) {
     io.on("connection", (socket) => {
         console.log(`User connected: ${socket.id}`);
 
-        // Get userId from the client handshake
+        // ... (user connection logic) ...
         const userId = socket.handshake.query.userId;
         if (userId) {
             userSocketMap[userId] = socket.id;
             console.log(`User ${userId} mapped to socket ${socket.id}`);
-            // Emit 'getOnlineUsers' to all clients
             io.emit("getOnlineUsers", Object.keys(userSocketMap));
         }
 
-        // Join a chat room
+        // ... (joinChat logic) ...
         socket.on("joinChat", (chatId) => {
             socket.join(chatId);
             console.log(`User ${socket.id} joined chat room: ${chatId}`);
@@ -27,14 +26,19 @@ function initializeSocket(io) {
         // Handle sending a new message
         socket.on("sendMessage", async (messageData) => {
             try {
-                // 1. Save the message to the database
+                // 1. Save the message (this now also updates lastMessage correctly)
                 const { newMessage, updatedChat } =
                     await messageController.saveMessage(messageData);
 
-                // 2. Emit the new message to all users in that chat room
-                io.to(messageData.chatId).emit("newMessage", newMessage);
+                // 2. Emit the new message to all *other* users in that chat room
+                // --- THIS IS THE FIX ---
+                // We use socket.broadcast to avoid sending the message back to the sender
+                socket.broadcast
+                    .to(messageData.chatId)
+                    .emit("newMessage", newMessage);
+                // --- END OF FIX ---
 
-                // 3. Emit an event to update chat lists for both participants
+                // 3. Emit an event to update chat lists for *all* participants
                 updatedChat.participants.forEach((participant) => {
                     const participantSocketId =
                         userSocketMap[participant._id.toString()];
@@ -50,23 +54,21 @@ function initializeSocket(io) {
             }
         });
 
-        // Handle user disconnect
+        // ... (disconnect logic) ...
         socket.on("disconnect", () => {
             console.log(`User disconnected: ${socket.id}`);
-            // Find and remove user from the map
             for (const [key, value] of Object.entries(userSocketMap)) {
                 if (value === socket.id) {
                     delete userSocketMap[key];
                     break;
                 }
             }
-            // Emit updated online users list
             io.emit("getOnlineUsers", Object.keys(userSocketMap));
         });
     });
 }
 
-// Export functions to get the instance and the map
+// ... (exports) ...
 const getSocketIO = () => ioInstance;
 const getUserSocketMap = () => userSocketMap;
 
