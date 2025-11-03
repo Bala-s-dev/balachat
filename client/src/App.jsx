@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// src/App.jsx
+import React, { useEffect, useState } from 'react';
 import Chat from './components/chat/Chat';
 import Detail from './components/detail/Detail';
 import List from './components/list/List';
@@ -11,20 +12,37 @@ const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
   const { chatId } = useChatStore();
 
+  // This state will control the slide-in Detail panel
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+
   useEffect(() => {
-    // This will check localStorage for a token and fetch the user
     fetchUserInfo();
   }, [fetchUserInfo]);
+
+  // When we switch chats, close the detail panel
+  useEffect(() => {
+    setIsDetailOpen(false);
+  }, [chatId]);
 
   if (isLoading) return <div className="loading">Loading...</div>;
 
   return (
-    <div className="container">
+    <div className={`container ${chatId && isDetailOpen ? 'detail-open' : ''}`}>
       {currentUser ? (
         <>
           <List />
-          {chatId && <Chat />}
-          {chatId && <Detail />}
+          {chatId ? (
+            <Chat onToggleDetail={() => setIsDetailOpen((p) => !p)} />
+          ) : (
+            <div className="chat-placeholder">
+              <img src="./favicon.png" alt="Logo" width={80} />
+              <h2>Bala's Chat</h2>
+              <p>Select a chat to start messaging</p>
+            </div>
+          )}
+          {chatId && isDetailOpen && (
+            <Detail onClose={() => setIsDetailOpen(false)} />
+          )}
         </>
       ) : (
         <Login />

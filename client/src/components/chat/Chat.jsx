@@ -5,6 +5,7 @@ import { api, getSocket } from "../../lib/api";
 import { useChatStore } from "../../lib/chatStore";
 import { useUserStore } from "../../lib/userStore";
 import upload from "../../lib/upload";
+import { encryptMessage, decryptMessage } from '../../lib/crypto';
 
 const Chat = () => {
   const [chat, setChat] = useState({ messages: [] });
@@ -33,7 +34,12 @@ const Chat = () => {
     const fetchMessages = async () => {
       try {
         const res = await api.get(`/messages/${chatId}`);
-        setChat({ messages: res.data });
+        // --- 2. Decrypt initial messages ---
+        const decryptedMessages = res.data.map((message) => ({
+          ...message,
+          text: decryptMessage(message.text, chatId),
+        }));
+        setChat({ messages: decryptedMessages });
       } catch (err) {
         console.log(err);
       }
@@ -41,16 +47,19 @@ const Chat = () => {
     fetchMessages();
 
     // 2. Join chat room via WebSocket
-    if (socket) {
-      socket.emit("joinChat", chatId);
-    }
+    if (!socket) return;
+    socket.emit('joinChat', chatId);
 
     // 3. Listen for new messages
     const handleNewMessage = (newMessage) => {
       if (newMessage.chatId === chatId) {
+        // --- 3. Decrypt incoming message ---
         setChat((prev) => ({
           ...prev,
-          messages: [...prev.messages, newMessage],
+          messages: [
+            ...prev.messages,
+            { ...newMessage, text: decryptMessage(newMessage.text, chatId) },
+          ],
         }));
       }
     };
@@ -91,10 +100,13 @@ const Chat = () => {
         imgUrl = await upload(img.file);
       }
 
+      // --- Encrypt the message text before sending ---
+      const encryptedText = encryptMessage(text, chatId);
+
       const messageData = {
         chatId: chatId,
         senderId: currentUser.id,
-        text: text,
+        text: encryptedText,
         img: imgUrl,
         createdAt: new Date(), // Client-side timestamp
       };
@@ -105,7 +117,7 @@ const Chat = () => {
       // Optimistic UI update
       setChat((prev) => ({
         ...prev,
-        messages: [...prev.messages, messageData],
+        messages: [...prev.messages, { ...messageData, text: text }],
       }));
 
       // Clear inputs

@@ -5,7 +5,8 @@ const dotenv = require("dotenv");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
-
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 // Load Env Variables
 dotenv.config();
 
@@ -24,8 +25,16 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
+app.use(helmet());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(express.json());
+
+// Rate Limiter
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, 
+    message: "Too many login attempts from this IP, please try again after 15 minutes",
+});
 
 // Serve Static Files (for uploaded avatars/images)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -37,7 +46,7 @@ mongoose
     .catch((err) => console.error("MongoDB Connection Error:", err));
 
 // API Routes
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", authLimiter ,authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/chats", chatRoutes);
 app.use("/api/messages", messageRoutes);

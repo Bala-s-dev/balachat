@@ -1,13 +1,15 @@
+/* src/index.css */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 }
 
 body {
-  background-color: aliceblue;
+  /* New gradient background */
+  background: linear-gradient(to right, #8e2de2, #4a00e0);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,13 +18,23 @@ body {
 }
 
 .container {
-  width: auto;
-  height: 95vh;
-  background-color: rgba(17, 25, 40, 0.75);
-  backdrop-filter: blur(19px) saturate(180%);
+  width: 90vw;
+  height: 90vh;
+  /* Cleaner glassmorphism */
+  background-color: rgba(17, 25, 40, 0.5);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.125);
-  display: flex;
+  display: grid;
+  /* 2-column layout: List | Chat */
+  grid-template-columns: 1fr 2.5fr;
+  transition: grid-template-columns 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+/* 3-column layout when Detail is open */
+.container.detail-open {
+  grid-template-columns: 1fr 1.5fr 1fr;
 }
 
 .loading {
@@ -30,4 +42,38 @@ body {
   font-size: 36px;
   border-radius: 10px;
   background-color: rgba(17, 25, 40, 0.9);
+}
+
+/* Placeholder for when no chat is selected */
+.chat-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  flex-direction: column;
+  gap: 10px;
+  border-left: 1px solid rgba(255, 255, 255, 0.125);
+  color: #c9c9c9;
+}
+.chat-placeholder h2 {
+  font-weight: 300;
+  font-size: 24px;
+}
+.chat-placeholder p {
+  font-weight: 300;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: #8e2de2;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6c1fa8;
 }
