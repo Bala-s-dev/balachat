@@ -7,7 +7,6 @@
   flex-direction: column;
 }
 
-/* Mobile Back Button */
 .top .back-button {
   display: block;
   background: none;
@@ -35,8 +34,7 @@
 }
 
 .top {
-  /* --- MOBILE FIRST --- */
-  padding: 12px 10px; /* Tighter padding */
+  padding: 12px 10px; 
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -52,7 +50,7 @@
 }
 
 .top .user img {
-  width: 40px; /* Smaller avatar */
+  width: 40px; 
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
@@ -66,7 +64,7 @@
 }
 
 .top .user .texts span {
-  font-size: 16px; /* Smaller font */
+  font-size: 16px; 
   font-weight: bold;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -85,22 +83,22 @@
 }
 
 .top .icons img {
-  width: 18px; /* Smaller icons */
+  width: 18px; 
   height: 18px;
   cursor: pointer;
 }
 
 .center {
-  padding: 10px; /* Tighter padding */
+  padding: 10px; 
   flex: 1;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Tighter gap */
+  gap: 12px; 
 }
 
 .message {
-  max-width: 80%; /* Allow bubbles to be a bit wider on mobile */
+  max-width: 80%; 
   display: flex;
   gap: 10px;
 }
@@ -127,11 +125,11 @@
 }
 
 .message .texts p {
-  padding: 10px 15px; /* Tighter padding */
+  padding: 10px 15px; 
   background-color: rgba(17, 25, 40, 0.3);
   border-radius: 10px;
   word-wrap: break-word;
-  font-size: 14px; /* Clearer font size */
+  font-size: 14px; 
 }
 
 .message.own .texts p {
@@ -139,7 +137,7 @@
 }
 
 .message .texts span {
-  font-size: 11px; /* Smaller timestamp */
+  font-size: 11px; 
   color: #c0c0c0;
 }
 
@@ -147,9 +145,8 @@
   align-self: flex-end;
 }
 
-/* Image Preview */
 .preview {
-  padding: 8px 10px; /* Tighter padding */
+  padding: 8px 10px; 
   border-bottom: 1px solid rgba(255, 255, 255, 0.125);
   position: relative;
 }
@@ -274,7 +271,7 @@
   }
   .message {
     gap: 20px;
-    max-width: 70%; /* Restore max-width */
+    max-width: 70%; 
   }
   .message .texts p {
     padding: 20px;

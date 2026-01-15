@@ -38,13 +38,12 @@ const Detail = () => {
 
   const handleLogout = () => {
     logoutUser();
-    resetChat(); // This will also reset the view to 'list'
+    resetChat(); 
     toast.success('Logged out successfully');
   };
 
   return (
     <div className="detail">
-      {/* Mobile-only Back Button */}
       <button className="back-button" onClick={() => setCurrentView('chat')}>
         &lt;
       </button>

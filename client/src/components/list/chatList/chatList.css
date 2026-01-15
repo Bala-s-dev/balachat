@@ -6,8 +6,8 @@
 .chatList .search {
     display: flex;
     align-items: center;
-    gap: 10px; /* Reduced gap */
-    padding: 15px 10px; /* Reduced padding */
+    gap: 10px; 
+    padding: 15px 10px; 
 }
 
 .chatList .search .searchBar {
@@ -15,7 +15,7 @@
     background-color: rgba(17, 25, 40, 0.5);
     display: flex;
     align-items: center;
-    gap: 10px; /* Reduced gap */
+    gap: 10px;
     border-radius: 10px;
     padding-left: 10px;
 }
@@ -27,7 +27,7 @@
     color: white;
     flex: 1;
     padding: 10px;
-    font-size: 14px; /* Smaller font on mobile */
+    font-size: 14px; 
 }
 
 .chatList .search .searchBar img {
@@ -36,14 +36,13 @@
 }
 
 .chatList .search .add {
-    width: 30px; /* Smaller add button */
+    width: 30px; 
     height: 30px;
     background-color: rgba(17, 25, 40, 0.5);
     padding: 0;
     border-radius: 10px;
     cursor: pointer;
     border: none;
-    /* Ensure icon inside is centered and sized */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,8 +55,8 @@
 .chatList .item {
     display: flex;
     align-items: center;
-    gap: 15px; /* Reduced gap */
-    padding: 15px 10px; /* Reduced padding */
+    gap: 15px; 
+    padding: 15px 10px; 
     cursor: pointer;
     border-bottom: 1px solid rgba(255, 255, 255, 0.125);
     position: relative; 
@@ -65,7 +64,7 @@
 
 .chatList .item.unread::after {
   content: '';
-  width: 8px; /* Smaller dot */
+  width: 8px; 
   height: 8px;
   border-radius: 50%;
   background-color: #5183fe;
@@ -76,7 +75,7 @@
 }
 
 .chatList .item img {
-    width: 40px; /* Smaller avatar */
+    width: 40px; 
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
@@ -85,17 +84,17 @@
 .chatList .item .texts {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* Reduced gap */
+    gap: 5px;
     overflow: hidden; 
 }
 
 .chatList .item .texts span {
     font-weight: 500;
-    font-size: 15px; /* Smaller font */
+    font-size: 15px; 
 }
 
 .chatList .item .texts p {
-    font-size: 13px; /* Smaller font */
+    font-size: 13px; 
     font-weight: 300;
     white-space: nowrap; 
     overflow: hidden;

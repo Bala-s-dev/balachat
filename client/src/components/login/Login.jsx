@@ -2,8 +2,8 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "./login.css";
 import upload from "../../lib/upload";
-import { api } from "../../lib/api"; // Import our api helper
-import { useUserStore } from "../../lib/userStore"; // Import login action
+import { api } from "../../lib/api"; 
+import { useUserStore } from "../../lib/userStore"; 
 
 const Login = () => {
   const [avatar, setAvatar] = useState({
@@ -12,7 +12,7 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const { loginUser } = useUserStore(); // Get the action from the store
+  const { loginUser } = useUserStore(); 
 
   const handleAvatar = (e) => {
     if (e.target.files[0]) {
@@ -33,7 +33,6 @@ const Login = () => {
     try {
       let imgUrl = "./avatar.png";
       if (avatar.file) {
-        // 1. Upload avatar first
         imgUrl = await upload(avatar.file);
       }
 

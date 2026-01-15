@@ -5,7 +5,6 @@
     overflow-y: auto;
 }
 
-/* Mobile Back Button */
 .detail .back-button {
   display: block;
   background: none;
@@ -44,7 +43,7 @@
     display: flex;
     flex-direction: column;
     gap: 25px;
-    flex-grow: 1; /* Make info fill remaining space */
+    flex-grow: 1; 
 }
 
 
@@ -65,7 +64,7 @@
 .detail .info button.logout  {
     padding: 10px;
     background-color: #1a73e0;
-    margin-top: auto; /* Push logout button to the bottom */
+    margin-top: auto; 
 }
 
 

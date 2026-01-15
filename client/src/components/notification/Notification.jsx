@@ -5,8 +5,6 @@ const Notification = () => {
   return (
     <div className="">
         <ToastContainer position="bottom-right"/>
-
-
     </div>
   )
 }

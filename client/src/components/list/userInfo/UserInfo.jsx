@@ -12,7 +12,6 @@ const UserInfo = () => {
         <h2>{currentUser?.username || 'Guest'} </h2>
       </div>
       <div className="icons">
-        {/* Removed all icons */}
         <img
           src="./more.png"
           alt="More Options"

@@ -4,7 +4,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// Note: authMiddleware is used on all user routes
 router.use(authMiddleware);
 
 router.get("/search", userController.searchUser);

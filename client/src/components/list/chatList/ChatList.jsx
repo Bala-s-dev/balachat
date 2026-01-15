@@ -27,13 +27,11 @@ const ChatList = () => {
     };
     fetchChats();
 
-    // Listen for socket updates
     const socket = getSocket();
     if (!socket) return;
 
     const handleUpdateChatList = (updatedChat) => {
       setChats((prevChats) => {
-        // Find and update the existing chat
         const updatedChats = prevChats.map((c) =>
           c.chatId === updatedChat._id
             ? {

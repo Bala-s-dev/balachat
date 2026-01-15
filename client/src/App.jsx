@@ -16,10 +16,8 @@ const App = () => {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
-  if (isLoading) return <div className="loading">Loading...</div>;
+  if (isLoading) return <div className="loading">Loading..</div>;
 
-  // This logic now ONLY applies classes for state
-  // It's used by both mobile and desktop CSS
   const getContainerClass = () => {
     if (currentView === 'detail') return 'show-detail';
     if (currentView === 'chat') return 'show-chat';

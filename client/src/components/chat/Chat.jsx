@@ -106,12 +106,11 @@ const Chat = () => {
         text: encryptedText,
         img: imgUrl,
         createdAt: new Date(),
-        textPreview: text, // For the chatlist preview
+        textPreview: text, 
       };
 
       socket.emit('sendMessage', messageData);
 
-      // Optimistic UI update
       setChat((prev) => ({
         ...prev,
         messages: [...prev.messages, { ...messageData, text: text }],

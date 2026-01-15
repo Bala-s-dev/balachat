@@ -1,11 +1,11 @@
 const messageController = require("./controllers/messageController");
 const chatController = require("./controllers/chatController");
 
-let ioInstance; // To store the io instance
-const userSocketMap = {}; // This was already here
+let ioInstance;
+const userSocketMap = {}; 
 
 function initializeSocket(io) {
-    ioInstance = io; // Store the instance when server.js passes it in
+    ioInstance = io; 
     io.on("connection", (socket) => {
         console.log(`User connected: ${socket.id}`);
 
