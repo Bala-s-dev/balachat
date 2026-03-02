@@ -1,64 +1,46 @@
 .userInfo {
-    padding: 12px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #dddddd35; 
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1e293b;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .userInfo .user {
-    display: flex;
-    align-items: center;
-    gap: 10px; 
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .userInfo .user img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #3b82f6;
 }
 
 .userInfo .user h2 {
-    font-size: 16px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #f1f5f9;
 }
 
 .userInfo .icons {
-    display: flex;
-    gap: 15px; 
+  display: flex;
+  gap: 12px;
 }
 
-.userInfo .icons img {
-    width: 18px; 
-    height: 18px;
-    cursor: pointer;
+.icon-btn {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.2s;
+  color: #94a3b8;
 }
 
-@media (min-width: 768px) {
-    .userInfo {
-        padding: 20px; 
-        border-bottom: none; 
-    }
-
-    .userInfo .user {
-        gap: 20px; 
-    }
-
-    .userInfo .user img {
-        width: 50px; 
-        height: 50px;
-    }
-
-    .userInfo .user h2 {
-        font-size: 1.25rem; 
-    }
-
-    .userInfo .icons {
-        gap: 20px;
-    }
-
-    .userInfo .icons img {
-        width: 20px;
-        height: 20px;
-    }
+.icon-btn:hover {
+  opacity: 1;
+  color: #3b82f6;
+  transform: scale(1.1);
 }

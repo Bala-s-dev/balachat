@@ -1,93 +1,130 @@
 .login {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 40px;
-    padding: 20px;
-    overflow-y: auto;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 40px;
+  padding: 20px;
+  overflow-y: auto;
+  background: radial-gradient(circle at top right, #1e293b, #0f172a);
 }
 
 .login .item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    width: 100%; 
+  width: 100%;
+  max-width: 400px;
+  background-color: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.login .item h2 {
+  margin-bottom: 25px;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  color: #f1f5f9;
 }
 
 .login .item form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .login .item form input {
-    width: 100%;
-    padding: 20px;
-    border: none;
-    outline: none;
-    background-color: rgba(17, 25, 40, 0.6);
-    color: white;
-    border-radius: 5px;
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  outline: none;
+  background-color: rgba(15, 23, 42, 0.5);
+  color: white;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.login .item form input:focus {
+  border-color: #3b82f6;
+  background-color: rgba(15, 23, 42, 0.8);
 }
 
 .login .item form label {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    text-decoration: underline;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s;
+}
+
+.login .item form label:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .login .item form label img {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    object-fit: cover;
-    opacity: 0.6;
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.login .item form label span {
+  font-size: 14px;
+  color: #94a3b8;
+  text-decoration: underline;
 }
 
 .login .item form button {
-    width: 100%;
-    padding: 20px;
-    border: none;
-    background-color: #1f8ef1;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: transform 0.1s, opacity 0.2s;
+  margin-top: 10px;
+}
+
+.login .item form button:hover {
+  opacity: 0.9;
+}
+
+.login .item form button:active {
+  transform: scale(0.98);
 }
 
 .login .item form button:disabled {
-    cursor: not-allowed;
-    background-color: #1f8ff19c;
+  background: #475569;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .separator {
-    width: 80%;
-    height: 2px;
-    background-color: #dddddd35;
+  width: 100%;
+  max-width: 400px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
 
-
 @media (min-width: 768px) {
-    .login {
-        flex-direction: row;
-        gap: 100px;
-        padding: 40px;
-        overflow-y: hidden; 
-    }
+  .login {
+    flex-direction: row;
+    gap: 60px;
+  }
 
-    .separator {
-        width: 2px;
-        height: 80%;
-    }
+  .separator {
+    width: 1px;
+    height: 400px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
 }

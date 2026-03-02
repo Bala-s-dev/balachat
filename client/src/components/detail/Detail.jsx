@@ -1,10 +1,13 @@
+import React from 'react';
 import './detail.css';
 import { useUserStore } from '../../lib/userStore';
 import { useChatStore } from '../../lib/chatStore';
 import { api } from '../../lib/api';
 import { toast } from 'react-toastify';
+import { ChevronLeft, ChevronUp, ChevronDown, Download, LogOut, ShieldAlert } from 'lucide-react';
 
 const Detail = () => {
+
   const { user, changeBlock, isReceiverBlocked, resetChat, setCurrentView } =
     useChatStore();
   const { currentUser, logoutUser, updateUser } = useUserStore();
@@ -44,9 +47,12 @@ const Detail = () => {
 
   return (
     <div className="detail">
-      <button className="back-button" onClick={() => setCurrentView('chat')}>
-        &lt;
-      </button>
+      <div className="top-bar">
+        <button className="back-button" onClick={() => setCurrentView('chat')}>
+          <ChevronLeft size={24} />
+        </button>
+        <span>Details</span>
+      </div>
 
       <div className="user">
         <img src={user?.avatar || './avatar.png'} alt="User Avatar" />
@@ -57,32 +63,33 @@ const Detail = () => {
         <div className="option">
           <div className="title">
             <span>Chat Settings</span>
-            <img src="./arrowUp.png" alt="Arrow Up" />
+            <ChevronUp size={20} />
           </div>
         </div>
         <div className="option">
           <div className="title">
             <span>Privacy & Help</span>
-            <img src="./arrowUp.png" alt="Arrow Up" />
+            <ChevronUp size={20} />
           </div>
         </div>
         <div className="option">
           <div className="title">
             <span>Shared Photos</span>
-            <img src="./arrowDown.png" alt="Arrow Down" />
+            <ChevronDown size={20} />
           </div>
-          {/* Photos mapping logic would go here */}
         </div>
         <div className="option">
           <div className="title">
             <span>Shared Files</span>
-            <img src="./arrowUp.png" alt="Arrow Up" />
+            <ChevronUp size={20} />
           </div>
         </div>
-        <button onClick={handleBlock}>
+        <button className="block-btn" onClick={handleBlock}>
+          <ShieldAlert size={18} />
           {isReceiverBlocked ? 'Unblock User' : 'Block User'}
         </button>
         <button className="logout" onClick={handleLogout}>
+          <LogOut size={18} />
           Logout
         </button>
       </div>

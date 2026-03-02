@@ -1,21 +1,50 @@
 .detail {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: #1e293b;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .detail {
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    height: 100vh;
+  }
+}
+
+.detail .top-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail .top-bar span {
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .detail .back-button {
   display: block;
   background: none;
   border: none;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
+  color: #94a3b8;
   cursor: pointer;
-  padding: 20px 15px 0 20px;
-  align-self: flex-start;
+  padding: 0;
+  transition: color 0.2s;
 }
+
+.detail .back-button:hover {
+  color: #3b82f6;
+}
+
 @media (min-width: 768px) {
   .detail .back-button {
     display: none;
@@ -23,50 +52,29 @@
 }
 
 .detail .user {
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid #dddddd35;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .detail .user img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(59, 130, 246, 0.3);
 }
 
 .detail .info {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    flex-grow: 1; 
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex-grow: 1;
 }
-
-
-.detail .info button {
-    padding: 15px;
-    background-color: rgba(230, 74,105, 0.553);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.detail .info button:hover {
-    background-color: rgba(220, 20, 60, 0.795);
-}
-
-.detail .info button.logout  {
-    padding: 10px;
-    background-color: #1a73e0;
-    margin-top: auto; 
-}
-
 
 .detail .info .option {
   display: flex;
@@ -78,85 +86,50 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 10px 0;
+  cursor: pointer;
+  color: #f1f5f9;
 }
+
 .detail .info .option .title span {
   font-weight: 500;
   font-size: 16px;
 }
 
-.detail .info .option .title img {
-  width: 20px;
-  height: 20px;
-  background-color: rgba(17, 25, 48, 0.3);
-  padding: 5px;
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.detail .info .photos {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.detail .info .photos .empty-photos {
-  font-size: 14px;
-  color: #c9c9c9;
-}
-
-/* Photo Item Styles (for when you add them) */
-.detail .info .photos .photoItem {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.detail .info .photos .photoItem .photoDetail {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.detail .info .photos .photoItem .photoDetail img {
-  width: 40px;
-  height: 40px;
-  border-radius: 5px;
-  object-fit: cover;
-}
-.detail .info .photos .photoItem .photoDetail span {
-  font-size: 14px;
-  color: lightgray;
-  font-weight: 300;
-}
-.detail .info .photos .photoItem .icon {
-  width: 30px;
-  height: 30px;
-  background-color: rgba(17, 25, 48, 0.3);
-  padding: 10px;
-  border-radius: 50%;
-  cursor: pointer;
+.detail .info .option .title svg {
+  color: #94a3b8;
 }
 
 .detail .info button {
-  padding: 15px;
-  background-color: rgba(230, 74, 105, 0.553);
-  color: white;
+  padding: 12px;
+  border-radius: 8px;
   border: none;
-  border-radius: 10px;
+  font-weight: 600;
   cursor: pointer;
   width: 100%;
-  font-weight: 500;
-  font-size: 15px;
   transition: background-color 0.2s;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.detail .info button:hover {
-  background-color: rgba(220, 20, 60, 0.795);
+.detail .info button:not(.logout) {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.detail .info button:not(.logout):hover {
+  background-color: rgba(239, 68, 68, 0.3);
 }
 
 .detail .info button.logout {
-  padding: 15px;
-  background-color: #5183fe;
+  background-color: #3b82f6;
+  color: white;
+  margin-top: auto;
 }
+
 .detail .info button.logout:hover {
-  background-color: #3a6cd9;
+  background-color: #2563eb;
 }

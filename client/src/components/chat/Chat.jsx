@@ -7,10 +7,11 @@ import { useUserStore } from '../../lib/userStore';
 import upload from '../../lib/upload';
 import { encryptMessage, decryptMessage } from '../../lib/crypto';
 import { toast } from 'react-toastify';
+import { Phone, Video, Info, Image, Camera, Mic, ChevronLeft } from 'lucide-react';
 
 const Chat = () => {
   const [chat, setChat] = useState({ messages: [] });
-  const [open, setOpen] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
   const [text, setText] = useState('');
   const [img, setImg] = useState({
     file: null,
@@ -76,7 +77,7 @@ const Chat = () => {
 
   const handleEmoji = (e) => {
     setText((prev) => prev + e.emoji);
-    setOpen(false);
+    setShowEmoji(false);
   };
 
   const handleImg = (e) => {
@@ -163,21 +164,21 @@ const Chat = () => {
     <div className="chat">
       <div className="top">
         <button className="back-button" onClick={() => setCurrentView('list')}>
-          &lt;
+          <ChevronLeft size={24} />
         </button>
         <div className="user">
           <img src={user?.avatar || './avatar.png'} alt="User avatar" />
           <div className="texts">
             <span>{user?.username || 'User'}</span>
-            <p>Online</p>
+            <p className="status-online">Online</p>
           </div>
         </div>
         <div className="icons">
-          <img src="./phone.png" alt="Phone icon" />
-          <img src="./video.png" alt="Video icon" />
-          <img
-            src="./info.png"
-            alt="Info icon"
+          <Phone size={20} className="icon-btn" />
+          <Video size={20} className="icon-btn" />
+          <Info
+            size={20}
+            className="icon-btn"
             onClick={() => setCurrentView('detail')}
           />
         </div>
@@ -201,19 +202,9 @@ const Chat = () => {
               </div>
             </div>
           ))}
-        {/* --- THIS BLOCK IS NOW REMOVED ---
-        {img.url && (
-          <div className="message own">
-            <div className="texts">
-              <img src={img.url} alt="Preview" />
-            </div>
-          </div>
-        )}
-        --- END OF REMOVAL --- */}
         <div ref={endRef}></div>
       </div>
 
-      {/* This is the correct preview, above the input bar */}
       {img.url && (
         <div className="preview">
           <img src={img.url} alt="Preview" />
@@ -229,7 +220,7 @@ const Chat = () => {
       <div className="bottom">
         <div className="icons">
           <label htmlFor="file">
-            <img src="./img.png" alt="Image icon" />
+            <Image size={20} className="icon-btn" />
           </label>
           <input
             type="file"
@@ -238,8 +229,8 @@ const Chat = () => {
             onChange={handleImg}
             disabled={isCurrentUserBlocked || isReceiverBlocked}
           />
-          <img src="./camera.png" alt="Camera icon" />
-          <img src="./mic.png" alt="Mic icon" />
+          <Camera size={20} className="icon-btn" />
+          <Mic size={20} className="icon-btn" />
         </div>
         <input
           type="text"
@@ -253,10 +244,10 @@ const Chat = () => {
           <img
             src="./emoji.png"
             alt="Emoji icon"
-            onClick={() => setOpen((prev) => !prev)}
+            onClick={() => setShowEmoji((prev) => !prev)}
           />
           <div className="picker">
-            {open && <EmojiPicker onEmojiClick={handleEmoji} />}
+            {showEmoji && <EmojiPicker onEmojiClick={handleEmoji} />}
           </div>
         </div>
         <button

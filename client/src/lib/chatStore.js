@@ -15,6 +15,9 @@ export const useChatStore = create((set) => ({
     changeChat: (chatId, user) => {
         const currentUser = useUserStore.getState().currentUser;
 
+        // Reset detail view when changing chat
+        let view = 'chat';
+
         // Check if the current user is blocked BY THE RECEIVER
         if (user.blocked?.includes(currentUser.id)) {
             return set({
@@ -22,7 +25,7 @@ export const useChatStore = create((set) => ({
                 user: null,
                 isCurrentUserBlocked: true,
                 isReceiverBlocked: false,
-                currentView: 'chat', // Still show chat, but it will be blocked
+                currentView: view,
             });
         }
 
@@ -33,7 +36,7 @@ export const useChatStore = create((set) => ({
                 user: user,
                 isCurrentUserBlocked: false,
                 isReceiverBlocked: true,
-                currentView: 'chat', // Show chat, but it will be blocked
+                currentView: view,
             });
         }
 
@@ -43,7 +46,7 @@ export const useChatStore = create((set) => ({
             user: user,
             isCurrentUserBlocked: false,
             isReceiverBlocked: false,
-            currentView: 'chat', // Switch to chat view
+            currentView: view,
         });
     },
 
@@ -60,7 +63,7 @@ export const useChatStore = create((set) => ({
             user: null,
             isCurrentUserBlocked: false,
             isReceiverBlocked: false,
-            currentView: 'list', // Reset to list view
+            currentView: 'list',
         })
     }
 }));

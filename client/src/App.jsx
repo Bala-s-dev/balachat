@@ -16,9 +16,14 @@ const App = () => {
     fetchUserInfo();
   }, [fetchUserInfo]);
 
-  if (isLoading) return <div className="loading">Loading..</div>;
+  if (isLoading) return (
+    <div className="loading-container" style={{display:'flex', height:'100vh', width:'100vw', alignItems:'center', justifyContent:'center'}}>
+      <div className="loading">Loading..</div>
+    </div>
+  );
 
   const getContainerClass = () => {
+    if (!chatId) return 'show-list';
     if (currentView === 'detail') return 'show-detail';
     if (currentView === 'chat') return 'show-chat';
     return 'show-list';
@@ -37,8 +42,8 @@ const App = () => {
           ) : (
             <div className="chat-placeholder">
               <img src="./favicon.png" alt="Logo" width={80} />
-              <h2>Bala's Chat</h2>
-              <p>Select a chat to start messaging</p>
+              <h2>SecureChat</h2>
+              <p>Select a chat to start messaging securely</p>
             </div>
           )}
         </>

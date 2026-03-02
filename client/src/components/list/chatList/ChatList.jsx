@@ -4,6 +4,7 @@ import AddUser from "./addUser/addUser";
 import { useUserStore } from "../../../lib/userStore";
 import { api, getSocket } from "../../../lib/api";
 import { useChatStore } from "../../../lib/chatStore";
+import { Search, Plus, Minus } from "lucide-react";
 
 const ChatList = () => {
   const [chats, setChats] = useState([]);
@@ -42,9 +43,7 @@ const ChatList = () => {
             : c
         );
 
-        // If chat wasn't in the list, add it
         if (!prevChats.some((c) => c.chatId === updatedChat._id)) {
-          // Need to format it like our frontend chats
            const receiver = updatedChat.participants.find(
             (p) => p._id.toString() !== currentUser.id
           );
@@ -59,10 +58,8 @@ const ChatList = () => {
           updatedChats.push(newChat);
         }
         
-        // Mark as unread
         setUnreadChats(prev => new Set(prev).add(updatedChat._id));
 
-        // Sort by new timestamp
         return updatedChats.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
       });
     };
@@ -75,18 +72,13 @@ const ChatList = () => {
   }, [currentUser?.id]);
 
   const handleSelect = (chat) => {
-    // We now pass the full receiver object
     const receiver = {
       id: chat.receiverId,
       username: chat.receiverUsername,
       avatar: chat.receiverAvatar,
       blocked: chat.receiverBlocked,
-      // We need to fetch the receiver's 'blocked' array for the check
-      // For now, we'll optimistically assume it's fine.
-      // A better approach: fetch full user info here.
     };
     
-    // Mark as read
     setUnreadChats((prev) => {
       const newUnread = new Set(prev);
       newUnread.delete(chat.chatId);
@@ -104,7 +96,7 @@ const ChatList = () => {
     <div className="chatList">
       <div className="search">
         <div className="searchBar">
-          <img src="./search.png" alt="Search" />
+          <Search size={20} color="#94a3b8" />
           <input
             type="text"
             placeholder="Search"
@@ -112,13 +104,12 @@ const ChatList = () => {
           />
         </div>
         <button className="add" onClick={() => setAddMode((prev) => !prev)}>
-          <img src={addMode ? './minus.png' : './plus.png'} alt="Toggle Add" />
+          {addMode ? <Minus size={20} /> : <Plus size={20} />}
         </button>
       </div>
 
       {filteredChats.map((chat) => (
         <div
-          // UI CHANGE: Use class for unread instead of style
           className={`item ${unreadChats.has(chat.chatId) ? 'unread' : ''}`}
           key={chat.chatId}
           onClick={() => handleSelect(chat)}

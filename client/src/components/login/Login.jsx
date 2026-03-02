@@ -79,11 +79,11 @@ const Login = () => {
   return (
     <div className="login">
       <div className="item">
-        <h2>Login</h2>
+        <h2>Welcome back,</h2>
         <form onSubmit={handleLogin}>
           <input type="text" placeholder="Email" name="email" required />
           <input type="password" placeholder="Password" name="password" required />
-          <button disabled={loading}>{loading ? "Loading" : "Sign In"}</button>
+          <button disabled={loading}>{loading ? "Loading..." : "Sign In"}</button>
         </form>
       </div>
       <div className="separator"></div>
@@ -91,8 +91,8 @@ const Login = () => {
         <h2>Create an Account</h2>
         <form onSubmit={handleRegister}>
           <label htmlFor="file">
-            <img src={avatar.url || "./avatar.png"} alt="avatar" />
-            Upload an image
+            <img src={avatar.url || "./avatar.png"} alt="" />
+            <span>Upload an image</span>
           </label>
           <input
             type="file"
@@ -103,9 +103,7 @@ const Login = () => {
           <input type="text" placeholder="Username" name="username" required />
           <input type="email" placeholder="Email" name="email" required />
           <input type="password" placeholder="Password" name="password" required />
-          <button type="submit" disabled={loading}>
-            {loading ? "Loading" : "Sign Up"}
-          </button>
+          <button disabled={loading}>{loading ? "Loading..." : "Sign Up"}</button>
         </form>
       </div>
     </div>
