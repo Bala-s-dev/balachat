@@ -1,62 +1,75 @@
 const messageController = require("./controllers/messageController");
-const chatController = require("./controllers/chatController");
 
 let ioInstance;
-const userSocketMap = {}; 
+const userSocketMap = {};
 
 function initializeSocket(io) {
-    ioInstance = io; 
-    io.on("connection", (socket) => {
-        console.log(`User connected: ${socket.id}`);
+    ioInstance = io;
 
-        // ... (user connection logic) ...
+    io.on("connection", (socket) => {
         const userId = socket.handshake.query.userId;
         if (userId) {
             userSocketMap[userId] = socket.id;
-            console.log(`User ${userId} mapped to socket ${socket.id}`);
             io.emit("getOnlineUsers", Object.keys(userSocketMap));
         }
 
-        // ... (joinChat logic) ...
         socket.on("joinChat", (chatId) => {
             socket.join(chatId);
-            console.log(`User ${socket.id} joined chat room: ${chatId}`);
         });
 
-        // Handle sending a new message
+        // ─── Message send ────────────────────────────────────────────────────
         socket.on("sendMessage", async (messageData) => {
             try {
-                // 1. Save the message (this now also updates lastMessage correctly)
-                const { newMessage, updatedChat } =
-                    await messageController.saveMessage(messageData);
+                const { newMessage, updatedChat } = await messageController.saveMessage(messageData);
 
-                // 2. Emit the new message to all *other* users in that chat room
-                // --- THIS IS THE FIX ---
-                // We use socket.broadcast to avoid sending the message back to the sender
-                socket.broadcast
-                    .to(messageData.chatId)
-                    .emit("newMessage", newMessage);
-                // --- END OF FIX ---
+                // FIX: Send the confirmed message ONLY to the sender (to replace their optimistic bubble)
+                // using their specific socket, not broadcast — so the sender gets exactly one message.
+                socket.emit("messageSaved", { tempId: messageData.tempId, message: newMessage });
 
-                // 3. Emit an event to update chat lists for *all* participants
+                // Send to every OTHER participant in the room (they haven't added it yet)
+                socket.broadcast.to(messageData.chatId).emit("newMessage", newMessage);
+
+                // Update chat list preview for all participants
                 updatedChat.participants.forEach((participant) => {
-                    const participantSocketId =
-                        userSocketMap[participant._id.toString()];
+                    const participantSocketId = userSocketMap[participant._id.toString()];
                     if (participantSocketId) {
-                        io.to(participantSocketId).emit(
-                            "updateChatList",
-                            updatedChat
-                        );
+                        io.to(participantSocketId).emit("updateChatList", updatedChat);
                     }
                 });
             } catch (err) {
                 console.error("Error handling sendMessage:", err);
+                socket.emit("messageError", { error: err.message });
             }
         });
 
-        // ... (disconnect logic) ...
+        // ─── RSA key exchange ─────────────────────────────────────────────────
+        socket.on("keyExchange", ({ chatId, recipientId, encryptedKey }) => {
+            const recipientSocket = userSocketMap[recipientId];
+            if (recipientSocket) {
+                io.to(recipientSocket).emit("receiveKey", { chatId, encryptedKey });
+            }
+        });
+
+        socket.on("storeEncryptedKeys", ({ chatId, encryptedKeys }) => {
+            encryptedKeys.forEach(({ userId, encryptedKey }) => {
+                const recipientSocket = userSocketMap[userId];
+                if (recipientSocket) {
+                    io.to(recipientSocket).emit("receiveKey", { chatId, encryptedKey });
+                }
+            });
+        });
+
+        // ─── Typing indicators ────────────────────────────────────────────────
+        socket.on("typing", ({ chatId, username }) => {
+            socket.broadcast.to(chatId).emit("userTyping", { chatId, username });
+        });
+
+        socket.on("stopTyping", ({ chatId }) => {
+            socket.broadcast.to(chatId).emit("userStopTyping", { chatId });
+        });
+
+        // ─── Disconnect ───────────────────────────────────────────────────────
         socket.on("disconnect", () => {
-            console.log(`User disconnected: ${socket.id}`);
             for (const [key, value] of Object.entries(userSocketMap)) {
                 if (value === socket.id) {
                     delete userSocketMap[key];
@@ -68,12 +81,7 @@ function initializeSocket(io) {
     });
 }
 
-// ... (exports) ...
-const getSocketIO = () => ioInstance;
+const getSocketIO      = () => ioInstance;
 const getUserSocketMap = () => userSocketMap;
 
-module.exports = {
-    initializeSocket,
-    getSocketIO,
-    getUserSocketMap,
-};
+module.exports = { initializeSocket, getSocketIO, getUserSocketMap };

@@ -1,11 +1,11 @@
 const express = require("express");
-const authController = require("../controllers/authController");
+const router  = express.Router();
+const { register, login, getMe, updatePublicKey } = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
 
-const router = express.Router();
-
-router.post("/register", authController.register);
-router.post("/login", authController.login);
-router.get("/me", authMiddleware, authController.getMe); 
+router.post("/register", register);
+router.post("/login",    login);
+router.get("/me",        authMiddleware, getMe);
+router.patch("/public-key", authMiddleware, updatePublicKey);
 
 module.exports = router;

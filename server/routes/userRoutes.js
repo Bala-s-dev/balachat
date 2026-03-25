@@ -1,13 +1,13 @@
 const express = require("express");
-const userController = require("../controllers/userController");
+const router  = express.Router();
+const { searchUsers, getPublicKey, blockUser, unblockUser } = require("../controllers/userController");
 const authMiddleware = require("../middleware/authMiddleware");
-
-const router = express.Router();
 
 router.use(authMiddleware);
 
-router.get("/search", userController.searchUser);
-router.post("/block", userController.blockUser);
-router.post("/unblock", userController.unblockUser);
+router.get("/search",              searchUsers);
+router.get("/:id/public-key",      getPublicKey);
+router.patch("/block/:id",         blockUser);
+router.patch("/unblock/:id",       unblockUser);
 
 module.exports = router;
