@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
-
 import { useAuthStore } from './store/authStore';
 import { LoginPage, RegisterPage } from './components/auth/AuthPages';
 import ChatPage from './pages/ChatPage';

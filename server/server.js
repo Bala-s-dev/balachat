@@ -2,22 +2,17 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+dotenv.config();
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-// Load Env Variables
-dotenv.config();
-
-// Import Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
-
-// Import Socket.io handlers
 const { initializeSocket } = require("./socket");
 
 // App Config

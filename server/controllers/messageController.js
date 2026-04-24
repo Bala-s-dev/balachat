@@ -4,7 +4,6 @@ const sanitizeHtml = require("sanitize-html");
 
 // For fetching initial messages
 exports.getMessages = async (req, res) => {
-    // ... (no changes here) ...
     try {
         const messages = await Message.find({
             chatId: req.params.chatId,
@@ -19,7 +18,6 @@ exports.getMessages = async (req, res) => {
 // This is the function called by socket.js
 exports.saveMessage = async (messageData) => {
     try {
-        // --- Sanitize the ENCRYPTED text input ---
         const sanitizedEncryptedText = sanitizeHtml(messageData.text, {
             allowedTags: [],
             allowedAttributes: {},
@@ -35,7 +33,6 @@ exports.saveMessage = async (messageData) => {
         await newMessage.save();
 
         // 4. Update the chat's last message
-        // --- THIS IS THE FIX ---
         // We now check for a 'textPreview' field from the client.
         let lastMessagePreview;
         if (messageData.img) {
@@ -47,7 +44,6 @@ exports.saveMessage = async (messageData) => {
                 allowedAttributes: {},
             }).substring(0, 30); // Show a preview
         }
-        // --- END OF FIX ---
 
         const updatedChat = await Chat.findByIdAndUpdate(
             messageData.chatId,

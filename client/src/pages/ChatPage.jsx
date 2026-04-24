@@ -7,17 +7,14 @@ import { useChatStore } from '../store/chatStore';
 export default function ChatPage() {
   const socket = useSocket();
   const { activeChat } = useChatStore();
-  // 'list' | 'chat' — mobile only
   const [mobilePanel, setMobilePanel] = useState('list');
 
-  // Auto-switch to chat view on mobile when a chat is selected
   useEffect(() => {
     if (activeChat) setMobilePanel('chat');
   }, [activeChat]);
 
   return (
     <div className="chat-layout">
-      {/* Sidebar — always rendered, CSS handles visibility on mobile */}
       <div className={`sidebar-panel${mobilePanel === 'chat' ? ' hidden' : ''}`}
         style={{width:'var(--sidebar-w)',height:'100%',flexShrink:0}}>
         <ChatList socket={socket} onSelectChat={()=>setMobilePanel('chat')} />

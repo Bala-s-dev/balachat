@@ -32,7 +32,6 @@ exports.register = async (req, res) => {
         });
         await user.save();
 
-        // Return a token immediately so the client can upload the RSA public key
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" });
 
         res.status(201).json({
@@ -72,13 +71,11 @@ exports.getMe = async (req, res) => {
     }
 };
 
-// PATCH /api/auth/public-key  — called once after RSA key pair is generated
 exports.updatePublicKey = async (req, res) => {
     const { publicKey } = req.body;
     if (!publicKey || typeof publicKey !== "string") {
         return res.status(400).json({ message: "publicKey is required" });
     }
-    // Basic validation: must look like a PEM block
     if (!publicKey.includes("BEGIN PUBLIC KEY")) {
         return res.status(400).json({ message: "Invalid public key format" });
     }

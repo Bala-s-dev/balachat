@@ -70,14 +70,12 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  // ─── FIX: Incoming message for the RECEIVER — decrypt before displaying ───
   addMessage: async (rawMsg, currentChatId) => {
     const { activeChat, messages } = get();
     if (!activeChat) return;
     const chatId = activeChat.chatId || activeChat._id;
     if (chatId !== currentChatId) return;
 
-    // Avoid duplicates (shouldn't normally happen but guard anyway)
     if (messages.some(m => m._id === rawMsg._id)) return;
 
     let decryptedMsg = rawMsg;
@@ -93,14 +91,10 @@ export const useChatStore = create((set, get) => ({
     set({ messages: [...messages, decryptedMsg] });
   },
 
-  // ─── FIX: messageSaved — replace sender's optimistic bubble with confirmed ─
-  // The server sends this back ONLY to the sender so they get exactly one copy.
   confirmMessage: (tempId, savedMsg, plainText) => {
     set((s) => ({
       messages: s.messages.map(m =>
         m._id === tempId
-          // Replace the temp bubble with the real message, but keep the
-          // already-decoded plaintext so we never show ciphertext to the sender.
           ? { ...savedMsg, text: plainText, pending: false }
           : m
       ),
@@ -125,14 +119,13 @@ export const useChatStore = create((set, get) => ({
       _id:       tempId,
       chatId,
       senderId,
-      text,          // plain text for sender's own view
+      text,          
       img:       imgUrl,
       createdAt: new Date().toISOString(),
       pending:   true,
     };
     set((s) => ({ messages: [...s.messages, optimistic] }));
 
-    // Include tempId so server can echo it back in messageSaved
     socket.emit('sendMessage', {
       tempId,
       chatId,
