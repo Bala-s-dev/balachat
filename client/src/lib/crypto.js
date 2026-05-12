@@ -163,7 +163,7 @@ export async function getOrCreateKey(chatId) {
   }
 
   // Deterministic fallback for legacy messages only — NOT used for new sends
-  const seed    = new TextEncoder().encode(chatId + 'nexus-e2ee-v1');
+  const seed    = new TextEncoder().encode(chatId + 'Bala-e2ee-v1');
   const hashBuf = await crypto.subtle.digest('SHA-256', seed);
   const key     = await crypto.subtle.importKey('raw', hashBuf, { name: AES_ALGO }, false, ['encrypt', 'decrypt']);
   aesKeyCache.set(chatId, key);

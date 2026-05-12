@@ -22,14 +22,9 @@ function initializeSocket(io) {
             try {
                 const { newMessage, updatedChat } = await messageController.saveMessage(messageData);
 
-                // FIX: Send the confirmed message ONLY to the sender (to replace their optimistic bubble)
-                // using their specific socket, not broadcast — so the sender gets exactly one message.
                 socket.emit("messageSaved", { tempId: messageData.tempId, message: newMessage });
-
-                // Send to every OTHER participant in the room (they haven't added it yet)
                 socket.broadcast.to(messageData.chatId).emit("newMessage", newMessage);
 
-                // Update chat list preview for all participants
                 updatedChat.participants.forEach((participant) => {
                     const participantSocketId = userSocketMap[participant._id.toString()];
                     if (participantSocketId) {
@@ -40,6 +35,16 @@ function initializeSocket(io) {
                 console.error("Error handling sendMessage:", err);
                 socket.emit("messageError", { error: err.message });
             }
+        });
+
+        socket.on("reactToMessage", ({ messageId, emoji, chatId, username }) => {
+            if (!messageId || !emoji || !chatId) return;
+            // Broadcast to everyone in the room (including sender for multi-device sync)
+            socket.broadcast.to(chatId).emit("messageReaction", {
+                messageId,
+                emoji,
+                username,
+            });
         });
 
         // ─── RSA key exchange ─────────────────────────────────────────────────
@@ -81,7 +86,7 @@ function initializeSocket(io) {
     });
 }
 
-const getSocketIO      = () => ioInstance;
+const getSocketIO = () => ioInstance;
 const getUserSocketMap = () => userSocketMap;
 
 module.exports = { initializeSocket, getSocketIO, getUserSocketMap };

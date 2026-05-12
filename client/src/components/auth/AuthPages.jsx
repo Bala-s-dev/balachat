@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import { useAuthStore } from '../../store/authStore';
 import { Btn, Input, Divider } from '../ui/index.jsx';
 
-/* Animated background mesh */
-function BgMesh() {
+/* Subtle animated background */
+function Background() {
   return (
     <div
       style={{
@@ -16,69 +16,43 @@ function BgMesh() {
         pointerEvents: 'none',
       }}
     >
-      {/* Grid dots */}
+      {/* Dot grid */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           backgroundImage:
-            'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
-          backgroundSize: '28px 28px',
+            'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.025) 1px, transparent 0)',
+          backgroundSize: '24px 24px',
         }}
       />
-      {/* Glow orbs */}
+      {/* Glow */}
       <div
         style={{
           position: 'absolute',
-          width: 700,
-          height: 700,
+          width: 600,
+          height: 600,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(0,212,180,0.07) 0%, transparent 65%)',
-          top: -200,
-          right: -150,
-          animation: 'pulse 8s ease-in-out infinite',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          width: 500,
-          height: 500,
-          borderRadius: '50%',
-          background:
-            'radial-gradient(circle, rgba(139,92,246,0.05) 0%, transparent 65%)',
-          bottom: -100,
-          left: -100,
-          animation: 'pulse 10s ease-in-out infinite 2s',
+            'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 65%)',
+          top: -150,
+          right: -100,
+          animation: 'pulse 9s ease-in-out infinite',
         }}
       />
       <div
         style={{
           position: 'absolute',
-          width: 300,
-          height: 300,
+          width: 400,
+          height: 400,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle, rgba(245,158,11,0.04) 0%, transparent 65%)',
-          top: '40%',
-          left: '30%',
+            'radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 65%)',
+          bottom: -80,
+          left: -80,
+          animation: 'pulse 12s ease-in-out infinite 3s',
         }}
       />
-      {/* Subtle horizontal lines */}
-      {[0.2, 0.4, 0.6, 0.8].map((t) => (
-        <div
-          key={t}
-          style={{
-            position: 'absolute',
-            top: `${t * 100}%`,
-            left: 0,
-            right: 0,
-            height: 1,
-            background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent)`,
-          }}
-        />
-      ))}
     </div>
   );
 }
@@ -95,30 +69,30 @@ function Logo() {
     >
       <div
         style={{
-          width: 38,
-          height: 38,
-          borderRadius: 12,
-          background:
-            'linear-gradient(135deg,var(--accent),var(--accent-dark))',
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          background: 'var(--accent)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: 'var(--shadow-accent)',
           flexShrink: 0,
         }}
       >
         <svg
-          width="18"
-          height="18"
+          width="17"
+          height="17"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#020c0a"
+          stroke="#fff"
           strokeWidth="2.5"
         >
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
         </svg>
       </div>
-      <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.03em' }}>
+      <span
+        style={{ fontSize: 19, fontWeight: 800, letterSpacing: '-0.035em' }}
+      >
         Nexus<span style={{ color: 'var(--accent)' }}>Chat</span>
       </span>
     </div>
@@ -129,20 +103,19 @@ function EncryptBadge() {
   return (
     <div
       style={{
-        display: 'flex',
+        display: 'inline-flex',
         alignItems: 'center',
-        gap: 8,
-        padding: '8px 14px',
+        gap: 6,
+        padding: '5px 12px',
         background: 'var(--accent-dim)',
-        border: '1px solid var(--accent-glow)',
+        border: '1px solid rgba(59,130,246,0.2)',
         borderRadius: 'var(--r-full)',
-        marginBottom: 24,
-        width: 'fit-content',
+        marginBottom: 22,
       }}
     >
       <svg
-        width="12"
-        height="12"
+        width="10"
+        height="10"
         viewBox="0 0 24 24"
         fill="none"
         stroke="var(--accent)"
@@ -153,7 +126,7 @@ function EncryptBadge() {
       </svg>
       <span
         style={{
-          fontSize: 11,
+          fontSize: 10.5,
           fontWeight: 600,
           color: 'var(--accent)',
           letterSpacing: '0.04em',
@@ -164,6 +137,15 @@ function EncryptBadge() {
     </div>
   );
 }
+
+const cardStyle = {
+  background: 'var(--bg-surface)',
+  border: '1px solid var(--border-light)',
+  borderRadius: 'var(--r-2xl)',
+  padding: '32px 28px',
+  boxShadow:
+    '0 24px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+};
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -197,32 +179,22 @@ export function LoginPage() {
         position: 'relative',
       }}
     >
-      <BgMesh />
+      <Background />
       <div
         className="animate-fade-up"
         style={{
           position: 'relative',
           zIndex: 1,
           width: '100%',
-          maxWidth: 420,
+          maxWidth: 400,
         }}
       >
-        {/* Card */}
-        <div
-          style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-light)',
-            borderRadius: 'var(--r-2xl)',
-            padding: '36px 32px',
-            boxShadow:
-              'var(--shadow-glass), inset 0 1px 0 rgba(255,255,255,0.06)',
-          }}
-        >
+        <div style={cardStyle}>
           <Logo />
           <EncryptBadge />
           <h1
             style={{
-              fontSize: 22,
+              fontSize: 21,
               fontWeight: 800,
               letterSpacing: '-0.03em',
               marginBottom: 4,
@@ -234,7 +206,7 @@ export function LoginPage() {
             style={{
               color: 'var(--text-secondary)',
               fontSize: 13,
-              marginBottom: 26,
+              marginBottom: 24,
               lineHeight: 1.6,
             }}
           >
@@ -253,8 +225,8 @@ export function LoginPage() {
               placeholder="you@example.com"
               icon={
                 <svg
-                  width="15"
-                  height="15"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -273,8 +245,8 @@ export function LoginPage() {
               placeholder="••••••••"
               icon={
                 <svg
-                  width="15"
-                  height="15"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -289,19 +261,17 @@ export function LoginPage() {
               type="submit"
               loading={loading}
               style={{
-                marginTop: 6,
-                height: 44,
+                marginTop: 4,
+                height: 42,
                 fontSize: 14,
                 fontWeight: 700,
-                borderRadius: 'var(--r-md)',
-                boxShadow: 'var(--shadow-accent)',
               }}
             >
               Sign in
             </Btn>
           </form>
 
-          <Divider label="or" style={{ margin: '22px 0' }} />
+          <Divider label="or" style={{ margin: '20px 0' }} />
           <p
             style={{
               textAlign: 'center',
@@ -309,7 +279,7 @@ export function LoginPage() {
               color: 'var(--text-secondary)',
             }}
           >
-            No account yet?{' '}
+            No account?{' '}
             <Link
               to="/register"
               style={{
@@ -326,7 +296,7 @@ export function LoginPage() {
         <p
           style={{
             textAlign: 'center',
-            marginTop: 16,
+            marginTop: 14,
             fontSize: 11,
             color: 'var(--text-muted)',
             display: 'flex',
@@ -336,8 +306,8 @@ export function LoginPage() {
           }}
         >
           <svg
-            width="10"
-            height="10"
+            width="9"
+            height="9"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -397,31 +367,22 @@ export function RegisterPage() {
         position: 'relative',
       }}
     >
-      <BgMesh />
+      <Background />
       <div
         className="animate-fade-up"
         style={{
           position: 'relative',
           zIndex: 1,
           width: '100%',
-          maxWidth: 420,
+          maxWidth: 400,
         }}
       >
-        <div
-          style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-light)',
-            borderRadius: 'var(--r-2xl)',
-            padding: '36px 32px',
-            boxShadow:
-              'var(--shadow-glass), inset 0 1px 0 rgba(255,255,255,0.06)',
-          }}
-        >
+        <div style={cardStyle}>
           <Logo />
           <EncryptBadge />
           <h1
             style={{
-              fontSize: 22,
+              fontSize: 21,
               fontWeight: 800,
               letterSpacing: '-0.03em',
               marginBottom: 4,
@@ -433,16 +394,16 @@ export function RegisterPage() {
             style={{
               color: 'var(--text-secondary)',
               fontSize: 13,
-              marginBottom: 26,
+              marginBottom: 24,
               lineHeight: 1.6,
             }}
           >
-            Join SecureChat — encrypted by default
+            Join NexusChat — encrypted by default
           </p>
 
           <form
             onSubmit={handleSubmit}
-            style={{ display: 'flex', flexDirection: 'column', gap: 14 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 13 }}
           >
             <Input
               label="Username"
@@ -451,8 +412,8 @@ export function RegisterPage() {
               placeholder="cooluser123"
               icon={
                 <svg
-                  width="15"
-                  height="15"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -471,8 +432,8 @@ export function RegisterPage() {
               placeholder="you@example.com"
               icon={
                 <svg
-                  width="15"
-                  height="15"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -491,8 +452,8 @@ export function RegisterPage() {
               placeholder="••••••••"
               icon={
                 <svg
-                  width="15"
-                  height="15"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -511,8 +472,8 @@ export function RegisterPage() {
               placeholder="••••••••"
               icon={
                 <svg
-                  width="15"
-                  height="15"
+                  width="14"
+                  height="14"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -528,19 +489,17 @@ export function RegisterPage() {
               type="submit"
               loading={loading}
               style={{
-                marginTop: 6,
-                height: 44,
+                marginTop: 4,
+                height: 42,
                 fontSize: 14,
                 fontWeight: 700,
-                borderRadius: 'var(--r-md)',
-                boxShadow: 'var(--shadow-accent)',
               }}
             >
               Create Account
             </Btn>
           </form>
 
-          <Divider label="or" style={{ margin: '22px 0' }} />
+          <Divider label="or" style={{ margin: '20px 0' }} />
           <p
             style={{
               textAlign: 'center',
